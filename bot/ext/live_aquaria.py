@@ -77,7 +77,7 @@ class LAResultsSelect(discord.ui.Select):
 class LiveAquaria(commands.Cog):
     LA_URL: ClassVar[str] = 'https://aquarium-fish.liveaquaria.com/api/Search/'
     
-    def __init__(self, bot: AquaBot):
+    def __init__(self, bot: AquaBot) -> None:
         self.bot = bot
 
     def _format_item(self, item: Tag) -> dict[str, str]:
