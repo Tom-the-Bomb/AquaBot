@@ -57,7 +57,7 @@ class AquaBot(commands.Bot):
 
         self._logger.info('--- INITIALIZED ---')
 
-        return self.load_all_cogs()
+        return
 
     def load_config(self) -> None:
         with open('config.json') as config:
@@ -67,7 +67,7 @@ class AquaBot(commands.Bot):
         token: str = kwargs.pop('token', self._token)
         return super().run(token, *args, **kwargs)
     
-    def load_all_cogs(self, *, jishaku: bool = True) -> None:
+    async def load_all_cogs(self, *, jishaku: bool = True) -> None:
 
         if jishaku:
             self.load_extension('jishaku')
@@ -88,6 +88,8 @@ class AquaBot(commands.Bot):
     async def start(self, *args, **kwargs) -> None:
         self.session = ClientSession()
         self.HTMLSession = HTMLSession()
+        
+        await self.load_all_cogs()
         return await super().start(*args, **kwargs)
 
     async def close(self) -> None:
