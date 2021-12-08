@@ -19,24 +19,25 @@ from ..utils import *
 
 class FBResultsSelect(discord.ui.Select):
     
-    def __init__(self, bot: AquaBot, items: list[dict[str, Union[tuple[str, str], str]]]) -> None:
+    def __init__(self, bot: AquaBot, items: Optional[list[dict[str, Union[tuple[str, str], str]]]] = None) -> None:
 
-        self.items = items
+        if items:
+            self.items = items
 
-        options = [
-            discord.SelectOption(
-                value=f"{i} {item['species'][1]}", # this is to make each value different so discord does not send us an error
-                label=f"{item['species'][0]} ({item['country']})", 
-                description=item['type'][0],
-            ) for i, item in enumerate(self.items)
-        ]
+            options = [
+                discord.SelectOption(
+                    value=f"{i} {item['species'][1]}", # this is to make each value different so discord does not send us an error
+                    label=f"{item['species'][0]} ({item['country']})", 
+                    description=item['type'][0],
+                ) for i, item in enumerate(self.items)
+            ]
 
-        super().__init__(
-            placeholder='Select a species to view',
-            min_values=1,
-            max_values=1,
-            options=options,
-        )
+            super().__init__(
+                placeholder='Select a species to view',
+                min_values=1,
+                max_values=1,
+                options=options,
+            )
 
         self.bot = bot
         self.reference_pat = re.compile(r'\(Ref\.? ?(([0-9]|,)+)\);?')
@@ -158,14 +159,16 @@ class FishBase(commands.Cog):
                 for result in data
             ]
             return data
+        elif tuple(soup.strings)[0].lower() == 'please wait. searching...':
+            return urljoin(self.FB_URL, soup.meta.get('content').split("'")[1])
         else:
-            return 'No exact matches were found :('
+            return {'Message': 'No exact matches were found :('}
 
     async def scrape_fb(self, type_: str, query: str):
         payload = {type_: query}
         ENDPOINT = (
             '/ComNames/CommonNameSearchList.php' if type_ == 'CommonName' else 
-            '/Nomenclature/ScientificNameSearchList.php' if type_ == 'gs' else ''
+            '/Nomenclature/ScientificNameSearchList.php?' if type_ == 'gs' else ''
         )
 
         URL = self.FB_URL + ENDPOINT
@@ -179,8 +182,11 @@ class FishBase(commands.Cog):
     async def do_fishbase(self, ctx: AquaContext, query: str, type_: str) -> discord.Message:
         results = await self.scrape_fb(type_, query)
 
-        if isinstance(results, str):
-            return await ctx.send(results)
+        if isinstance(results, dict):
+            return await ctx.send(results.get('Message'))
+        elif isinstance(results, str):
+            inst = await FBResultsSelect(self.bot).scrape_species(results)
+            return await ctx.reply(embed=inst)
         else:
             fm_results = [
                 f'**{num}.**\n\n' + '\n'.join([
