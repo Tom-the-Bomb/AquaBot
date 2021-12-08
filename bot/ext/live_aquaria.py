@@ -61,7 +61,7 @@ class LAResultsSelect(discord.ui.Select):
 
         url, data = await self.scrape_la_product(self.values[0])
         description = truncate(data.get('description') or '-')
-        print(description)
+
         embed = discord.Embed(
             title=data.get('name') or '-',
             url=url,

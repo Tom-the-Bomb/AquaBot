@@ -6,3 +6,6 @@ Pillow==8.3.1
 requests-html==0.10.0
 tabulate==0.8.9
 typing-extensions==3.10.0.0
+numpy==1.21.4
+matplotlib
+Equation
