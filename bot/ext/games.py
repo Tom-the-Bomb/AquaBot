@@ -1,5 +1,5 @@
 
-from Discord_Games import hangman, tictactoe, twenty_48_buttons, ChessGame, connect_four, aki_buttons, typeracer, battleship
+from Discord_Games import hangman, tictactoe, twenty_48_buttons, ChessGame, connect_four, aki_buttons, typeracer, battleship, wordle
 
 import discord
 from discord.ext import commands
@@ -94,6 +94,12 @@ class Games(commands.Cog):
     @commands.max_concurrency(1, commands.BucketType.user)
     async def _battleship(self, ctx, member: discord.Member):
         game = battleship.BattleShip(ctx.author, member)
+        await game.start(ctx)
+
+    @commands.command(name="wordle", aliases=["wd"])
+    @commands.max_concurrency(2, commands.BucketType.user)
+    async def _worldle(self, ctx):
+        game = wordle.Wordle()
         await game.start(ctx)
 
 def setup(bot):
