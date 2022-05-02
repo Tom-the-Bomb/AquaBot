@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+import re
 
 import matplotlib
 matplotlib.use("agg")
@@ -11,13 +12,14 @@ import numpy as np
 from io import BytesIO
 from Equation import Expression
 
-import math
-import re
+from ..utils import to_thread
 
+@to_thread
 def data_check(data):
     data = [a.isdigit() for a in data]
     return all(data)
 
+@to_thread
 def bar(*args):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     buffer = BytesIO()
@@ -29,6 +31,7 @@ def bar(*args):
     image = discord.File(buffer, "graph.png")
     return image
 
+@to_thread
 def pie(*args):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     plt.style.use("Solarize_Light2")
@@ -41,6 +44,7 @@ def pie(*args):
     image = discord.File(buffer, "graph.png")
     return image
 
+@to_thread
 def scatter(*args):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     plt.style.use("bmh")
@@ -53,6 +57,7 @@ def scatter(*args):
     image = discord.File(buffer, "graph.png")
     return image
 
+@to_thread
 def line(*args):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     plt.style.use("bmh")
@@ -68,6 +73,7 @@ def line(*args):
     image = discord.File(buffer, "graph.png")
     return image
 
+@to_thread
 def linear(m: float, b: float):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     plt.style.use("bmh")
@@ -86,6 +92,7 @@ def linear(m: float, b: float):
     image = discord.File(buffer, "graph.png")
     return image
 
+@to_thread
 def quadratic(a: float, b: float, c: float):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     plt.style.use("bmh")
@@ -104,6 +111,7 @@ def quadratic(a: float, b: float, c: float):
     image = discord.File(buffer, "graph.png")
     return image
 
+@to_thread
 def equation_(equation: str):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     plt.style.use("bmh")
@@ -133,6 +141,7 @@ def equation_(equation: str):
     image = discord.File(buffer, "graph.png")
     return image
 
+@to_thread
 def exponent(*args):
     plt.style.use(["fast", "fivethirtyeight", "ggplot"])
     plt.style.use("bmh")
@@ -158,7 +167,7 @@ class Graphing(commands.Cog):
         if not data_check(args):
             return await ctx.send("data points must be numerical values!")
 
-        image = await self.loop.run_in_executor(None, bar, *args)
+        image = await bar(*args)
         return await ctx.send(file=image)
 
     @commands.command(name="pie")
@@ -166,7 +175,7 @@ class Graphing(commands.Cog):
         if not data_check(args):
             return await ctx.send("data points must be numerical values!")
 
-        image = await self.loop.run_in_executor(None, pie, *args)
+        image = await pie(*args)
         return await ctx.send(file=image)
 
     @commands.command(name="scatterplot")
@@ -174,7 +183,7 @@ class Graphing(commands.Cog):
         if not data_check(args):
             return await ctx.send("data points must be numerical values!")
             
-        image = await self.loop.run_in_executor(None, scatter, *args)
+        image = await scatter(*args)
         return await ctx.send(file=image)
 
     @commands.command(name="linegraph", aliases=["line"])
@@ -182,23 +191,23 @@ class Graphing(commands.Cog):
         if not data_check(args):
             return await ctx.send("data points must be numerical values!")
 
-        image = await self.loop.run_in_executor(None, line, *args)
+        image = await line(*args)
         return await ctx.send(file=image)
 
     @commands.command(name="quadratic",  aliases=["quad"])
     async def quadratic(self, ctx, a: float, b: float, c: float):
-        image = await self.loop.run_in_executor(None, quadratic, a, b, c)
+        image = await quadratic(a, b, c)
         return await ctx.send(file=image)
 
     @commands.command(name="linear")
     async def linear(self, ctx, m: float, b: float):
-        image = await self.loop.run_in_executor(None, linear, m, b)
+        image = await linear(m, b)
         return await ctx.send(file=image)
 
     @commands.command(name="equation", aliases=["eq", "graph"])
     async def equation(self, ctx, equation: str):
         try:
-            image = await self.loop.run_in_executor(None, equation_, equation)
+            image = await equation_(equation)
             return await ctx.send(file=image)
         except TypeError:
             return await ctx.send("Invalid equation\nMake sure the only variable present is `x`!")
@@ -208,7 +217,7 @@ class Graphing(commands.Cog):
         if not data_check(args):
             return await ctx.send("data points must be numerical values!")
 
-        image = await self.loop.run_in_executor(None, exponent, *args)
+        image = await exponent(*args)
         return await ctx.send(file=image)
 
 def setup(client):

@@ -1,16 +1,22 @@
 from __future__ import annotations
 
-from typing import Awaitable,Optional, Callable, TypeVar
+from typing import Awaitable, Optional, Callable, TypeVar, Union
 from typing_extensions import ParamSpec
+from io import BytesIO
 import functools
 import asyncio
+import secrets
 
 import discord
+import aiohttp
 
 from .context import AquaContext
 from .bot import AquaBot as bot
 
 __all__: tuple[str] = (
+    'Number',
+    'num',
+    'post_cdn',
     'to_thread',
     'truncate',
     'ApiError',
@@ -21,6 +27,29 @@ __all__: tuple[str] = (
 
 P = ParamSpec('P')
 T = TypeVar('T')
+
+Number = Union[int, float]
+
+async def post_cdn(session: aiohttp.ClientSession, fp: BytesIO) -> Optional[str]:
+    data = aiohttp.FormData()
+    data.add_field('file', fp, filename=f'{secrets.token_urlsafe()}.png')
+    base = 'https://cdn.lambdabot.cf'
+
+    async with session.post(
+        base + '/upload', 
+        headers={'Authorization': 'Bearer aaa'}, 
+        data=data,
+        params={'directory': 'bomb_uploads'},
+    ) as r:
+        r.raise_for_status()
+        data = await r.json()
+        return base + '/uploads' + data.get('path')
+
+def num(n: str) -> Number:
+    n = float(n)
+    if n.is_integer():
+        n = int(n)
+    return n
 
 def to_thread(func: Callable[P, T]) -> Callable[P, Awaitable[T]]:
 
