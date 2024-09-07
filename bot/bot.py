@@ -17,7 +17,7 @@ class AquaBot(commands.Bot):
     emojis: ClassVar[dict[str, str]] = {
         'FAST_FW': '<:ffw:879025149372932128>',
         'REWIND' : '<:rewind:879025103747317792>',
-        'ARROW_LEFT' : '◀', 
+        'ARROW_LEFT' : '◀',
         'ARROW_RIGHT': '▶',
         'STOP': '▉',
     }
@@ -26,12 +26,12 @@ class AquaBot(commands.Bot):
 
         self.load_config()
         self._default_prefix: str = self.config['DEFAULT_PREFIX']
-        
+
         super().__init__(
-            command_prefix=commands.when_mentioned_or(self._default_prefix), 
+            command_prefix=commands.when_mentioned_or(self._default_prefix),
             description='A basic bot for aquarists',
             intents=discord.Intents.all(),
-            case_insensitive=True, 
+            case_insensitive=True,
             status=discord.Status.idle,
             activity=discord.Game('beep boop'),
             **kwargs
@@ -66,7 +66,7 @@ class AquaBot(commands.Bot):
     def run(self, *args, **kwargs) -> None:
         token: str = kwargs.pop('token', self._token)
         return super().run(token, *args, **kwargs)
-    
+
     async def load_all_cogs(self, *, jishaku: bool = True) -> None:
 
         if jishaku:
@@ -88,7 +88,7 @@ class AquaBot(commands.Bot):
     async def start(self, *args, **kwargs) -> None:
         self.session = ClientSession()
         self.HTMLSession = HTMLSession()
-        
+
         await self.load_all_cogs()
         return await super().start(*args, **kwargs)
 
@@ -128,5 +128,5 @@ class AquaBot(commands.Bot):
 
         if isinstance(error, commands.CommandNotFound):
             return
-        
+
         await ctx.send(error)

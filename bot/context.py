@@ -14,8 +14,8 @@ class AquaContext(commands.Context):
             return await super().send(content, **kwargs)
         except discord.HTTPException as e:
             if (
-                e.status == 400 and 
-                e.code == 50035 and 
+                e.status == 400 and
+                e.code == 50035 and
                 e.text == 'invalid form body\nin content: must be 4000 or fewer in length.'
             ):
                 return await super().send(await self.bot.post_mystbin(content), **kwargs)

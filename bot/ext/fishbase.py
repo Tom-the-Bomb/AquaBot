@@ -18,7 +18,7 @@ from ..context import AquaContext
 from ..utils import *
 
 class FBResultsSelect(discord.ui.Select):
-    
+
     def __init__(self, bot: AquaBot, items: Optional[list[dict[str, Union[tuple[str, str], str]]]] = None) -> None:
 
         if items:
@@ -27,7 +27,7 @@ class FBResultsSelect(discord.ui.Select):
             options = [
                 discord.SelectOption(
                     value=f"{i} {item['species'][1]}", # this is to make each value different so discord does not send us an error
-                    label=f"{item['species'][0]} ({item['country']})", 
+                    label=f"{item['species'][0]} ({item['country']})",
                     description=item['type'][0],
                 ) for i, item in enumerate(self.items)
             ]
@@ -42,12 +42,12 @@ class FBResultsSelect(discord.ui.Select):
         self.bot = bot
         self.reference_pat = re.compile(r'\(Ref\.? ?(([0-9]|,)+)\);?')
 
-    @to_thread 
+    @to_thread
     def parse_species_html(self, url: str, html: str) -> discord.Embed:
         soup = BeautifulSoup(html, features='lxml')
-    
+
         embed = discord.Embed(
-            description='', 
+            description='',
             url=url,
             color=self.bot.color
         )
@@ -101,7 +101,7 @@ class FBResultsSelect(discord.ui.Select):
         embed.description += f'**Description:**\n{properties}\n\n\n'
 
         all_headers = body_div.find_all('h1', class_='slabel bottomBorder')
-    
+
         headers = []
         for header in all_headers:
             headers += tuple(header.stripped_strings)
@@ -117,7 +117,7 @@ class FBResultsSelect(discord.ui.Select):
         embed.add_field(name='\u200b', value=f'**Conservation Status**\n{consv}', inline=False)
 
         return embed
-        
+
     async def scrape_species(self, url: str) -> Optional[discord.Embed]:
         async with self.bot.session.get(url) as response:
             if response.ok:
@@ -167,7 +167,7 @@ class FishBase(commands.Cog):
     async def scrape_fb(self, type_: str, query: str):
         payload = {type_: query}
         ENDPOINT = (
-            '/ComNames/CommonNameSearchList.php' if type_ == 'CommonName' else 
+            '/ComNames/CommonNameSearchList.php' if type_ == 'CommonName' else
             '/Nomenclature/ScientificNameSearchList.php?' if type_ == 'gs' else ''
         )
 
@@ -195,7 +195,7 @@ class FishBase(commands.Cog):
             ]
 
             entries = [discord.Embed(description=desc, color=ctx.bot.color) for desc in fm_results]
-                
+
             paginator = Paginator(ctx, entries)
             paginator.view.add_item(FBResultsSelect(self.bot, results[1:]))
 
@@ -208,7 +208,7 @@ class FishBase(commands.Cog):
     @fishbase_cmd.command(name='common', aliases=['cm', 'common_name', 'cname'])
     async def common_name(self, ctx: AquaContext, *, query: str) -> discord.Message:
         return await self.do_fishbase(ctx, query, 'CommonName')
-    
+
     @fishbase_cmd.command(name='sci', aliases=['scientific', 'sciname', 'sn'])
     async def sci_name(self, ctx: AquaContext, *, query: str) -> discord.Message:
         return await self.do_fishbase(ctx, query, 'gs')

@@ -81,10 +81,10 @@ def linear(m: float, b: float):
     plt.xlim((-40, 40))
     plt.ylim((-40, 40))
     buffer = BytesIO()
-    
+
     x_ = np.linspace(-100, 100, 50000)
     y  = [(m * i + b) for i in x_]
-        
+
     plt.plot(x_, y)
     plt.savefig(buffer)
     plt.close()
@@ -100,10 +100,10 @@ def quadratic(a: float, b: float, c: float):
     plt.xlim((-40, 40))
     plt.ylim((-40, 40))
     buffer = BytesIO()
-    
+
     x_ = np.linspace(-100, 100, 50000)
     y  = [(a * (i**2) + (b * i) + c) for i in x_]
-        
+
     plt.plot(x_, y)
     plt.savefig(buffer)
     plt.close()
@@ -124,16 +124,16 @@ def equation_(equation: str):
     equation = equation.replace(' ', '')
     equation = re.sub(r"(?<=[0-9x)])x", _mul, equation)
     equation = equation.replace(")(", ")*(")
-    
+
     x = np.linspace(-100, 100, 50000)
-    
+
     fn = Expression(equation, ["x"])
     y = [fn(i) for i in x]
-    
+
     plt.xlim((-40, 40))
-    plt.ylim((-40, 40))   
+    plt.ylim((-40, 40))
     buffer = BytesIO()
-    
+
     plt.plot(x, y)
     plt.savefig(buffer)
     plt.close()
@@ -182,7 +182,7 @@ class Graphing(commands.Cog):
     async def scatterplot(self, ctx, *args):
         if not data_check(args):
             return await ctx.send("data points must be numerical values!")
-            
+
         image = await scatter(*args)
         return await ctx.send(file=image)
 

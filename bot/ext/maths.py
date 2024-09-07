@@ -26,15 +26,15 @@ class InvalidEquation(Exception):
 class CalcButton(discord.ui.Button):
 
     view: LinearUI
-    
+
     def __init__(self, label: str, *, style: discord.ButtonStyle = discord.ButtonStyle.grey, row: int, custom_id: str = None):
         super().__init__(style=style, label=str(label), row=row, custom_id=custom_id)
 
     async def callback(self, interaction: discord.Interaction):
 
         process_embed = discord.Embed(
-            title='Linear Equation Calculator', 
-            description='Use the following buttons to input an equation in the format of: `y = mx + b`\nExample: `8 = 5x + 3`\nI will solve for `x`', 
+            title='Linear Equation Calculator',
+            description='Use the following buttons to input an equation in the format of: `y = mx + b`\nExample: `8 = 5x + 3`\nI will solve for `x`',
             color=self.view.ctx.bot.color,
         )
 
@@ -76,7 +76,7 @@ class CalcUI(AuthorOnlyView):
         self.add_item(CalcButton(".", row=3))
         self.add_item(CalcButton(0, row=3))
         self.add_item(CalcButton("=", row=3, style=discord.ButtonStyle.blurple))
-        
+
         self.add_item(CalcButton('+', style=discord.ButtonStyle.red, row=0))
         self.add_item(CalcButton('-', style=discord.ButtonStyle.red, row=1))
 
@@ -114,14 +114,14 @@ class LinearUI(AuthorOnlyView):
         self.add_item(CalcButton(".", row=3))
         self.add_item(CalcButton(0, row=3))
         self.add_item(CalcButton("=", row=3, style=discord.ButtonStyle.blurple))
-        
+
         self.add_item(CalcButton('+', style=discord.ButtonStyle.red, row=0))
         self.add_item(CalcButton('-', style=discord.ButtonStyle.red, row=1))
         self.add_item(CalcButton(X, style=discord.ButtonStyle.blurple, row=2))
         self.add_item(CalcButton('Enter', style=discord.ButtonStyle.green, row=3))
 
         self.add_item(CalcButton(DEL, style=discord.ButtonStyle.red, row=0))
-        
+
         for i in range(1, 4):
             self.add_item(CalcButton(WS, style=discord.ButtonStyle.grey, row=i))
 
@@ -146,8 +146,8 @@ class LinearUI(AuthorOnlyView):
             steps = (
                 f'{equation}\n'+
                 (
-                    f'{m}{X} = {y} - {b}\n' if b > 0 else 
-                    f'{m}{X} = {y} + {abs(b)}\n' if b < 0 else 
+                    f'{m}{X} = {y} - {b}\n' if b > 0 else
+                    f'{m}{X} = {y} + {abs(b)}\n' if b < 0 else
                     f'{m}{X} = {y}\n'
                 ) +
                 f'{X} = {mx} / {m}\n'+
@@ -164,7 +164,7 @@ class LinearUI(AuthorOnlyView):
         plt.style.use(["fast", "fivethirtyeight", "ggplot"])
         plt.style.use("bmh")
         buffer = BytesIO()
-        
+
         lim = abs(x) * 3
         x_ = np.linspace(-lim, lim, 100)
         y_  = [(m * i + b) for i in x_]
@@ -194,10 +194,10 @@ class MathCog(commands.Cog):
 
     @commands.command(name='linears')
     async def linear(self, ctx: AquaContext) -> discord.Message:
-        
+
         embed = discord.Embed(
-            title='Linear Equation Calculator', 
-            description='Use the following buttons to input an equation in the format of: `y = mx + b`\nExample: `8 = 5x + 3`\nI will solve for `x`', 
+            title='Linear Equation Calculator',
+            description='Use the following buttons to input an equation in the format of: `y = mx + b`\nExample: `8 = 5x + 3`\nI will solve for `x`',
             color=self.bot.color,
         )
 

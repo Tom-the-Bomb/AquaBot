@@ -12,13 +12,13 @@ class Games(commands.Cog):
         self._cog_name = "Game commands ..."
         self.bot = bot
         self.twenty_48_emojis = {
-            "0":    "<:grey:821404552783855658>", 
-            "2":    "<:twoo:821396924619161650>", 
-            "4":    "<:fourr:821396936870723602>", 
-            "8":    "<:eightt:821396947029983302>", 
-            "16":   "<:sixteen:821396959616958534>", 
-            "32":   "<:thirtytwo:821396969632169994>", 
-            "64":   "<:sixtyfour:821396982869524563>", 
+            "0":    "<:grey:821404552783855658>",
+            "2":    "<:twoo:821396924619161650>",
+            "4":    "<:fourr:821396936870723602>",
+            "8":    "<:eightt:821396947029983302>",
+            "16":   "<:sixteen:821396959616958534>",
+            "32":   "<:thirtytwo:821396969632169994>",
+            "64":   "<:sixtyfour:821396982869524563>",
             "128":  "<:onetwentyeight:821396997776998472>",
             "256":  "<:256:821397009394827306>",
             "512":  "<:512:821397040247865384>",
@@ -32,16 +32,16 @@ class Games(commands.Cog):
     @commands.max_concurrency(1, commands.BucketType.channel)
     async def connect4(self, ctx, member: discord.Member):
         game = connect_four.ConnectFour(
-            red  = ctx.author,         
-            blue = member,             
+            red  = ctx.author,
+            blue = member,
         )
         await game.start(ctx)
-    
+
     @commands.command(name="tictactoe", aliases=["ttt"])
     @commands.max_concurrency(1, commands.BucketType.channel)
     async def tictactoe(self, ctx, member: discord.Member):
         game = tictactoe.Tictactoe(
-            cross  = ctx.author, 
+            cross  = ctx.author,
             circle = member
         )
         await game.start(ctx)
@@ -56,7 +56,7 @@ class Games(commands.Cog):
     @commands.max_concurrency(1, commands.BucketType.channel)
     async def chess(self, ctx, member: discord.Member):
         game = ChessGame.Chess(
-            white = ctx.author, 
+            white = ctx.author,
             black = member
         )
         await game.start(ctx, timeout=60, add_reaction_after_move=True)
@@ -83,10 +83,10 @@ class Games(commands.Cog):
 
         game = typeracer.TypeRacer()
         await game.start(
-            ctx, 
+            ctx,
             embed_color=0x2F3136,
             path_to_text_font='bot/assets/segoe-ui-semilight-411.ttf',
-            timeout=30, 
+            timeout=30,
             mode=mode[2:]
         )
 

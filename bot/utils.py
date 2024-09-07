@@ -36,8 +36,8 @@ async def post_cdn(session: aiohttp.ClientSession, fp: BytesIO) -> Optional[str]
     base = 'https://cdn.lambdabot.cf'
 
     async with session.post(
-        base + '/upload', 
-        headers={'Authorization': 'Bearer aaa'}, 
+        base + '/upload',
+        headers={'Authorization': 'Bearer aaa'},
         data=data,
         params={'directory': 'bomb_uploads'},
     ) as r:

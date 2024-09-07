@@ -13,15 +13,15 @@ from ..context import AquaContext
 from ..utils import *
 
 class LAResultsSelect(discord.ui.Select):
-    
+
     def __init__(self, bot: AquaBot, items: list[dict[str, str]]) -> None:
 
         self.items = items
 
         options = [
             discord.SelectOption(
-                value=item['url'], 
-                label=item['name'], 
+                value=item['url'],
+                label=item['name'],
                 description=item['price']
             ) for item in self.items
         ]
@@ -76,7 +76,7 @@ class LAResultsSelect(discord.ui.Select):
 
 class LiveAquaria(commands.Cog):
     LA_URL: ClassVar[str] = 'https://aquarium-fish.liveaquaria.com/api/Search/'
-    
+
     def __init__(self, bot: AquaBot) -> None:
         self.bot = bot
 
@@ -90,7 +90,7 @@ class LiveAquaria(commands.Cog):
         name = details.find('h3', class_='title').contents[0]
 
         return {
-            'name': name, 'url': url, 
+            'name': name, 'url': url,
             'img': img, 'price': price,
         }
 
@@ -100,7 +100,7 @@ class LiveAquaria(commands.Cog):
         results = soup.find_all('div', class_='product')
         results = [self._format_item(item) for item in results[:limit]]
         return results
-    
+
     async def scrape_la(self, query: str, *, limit: Optional[int] = None) -> list[dict[str, str]]:
         async with self.bot.session.get(self.LA_URL + quote(query)) as response:
             if response.ok:
@@ -140,6 +140,6 @@ class LiveAquaria(commands.Cog):
         paginator = Paginator(ctx, entries)
         paginator.view.add_item(LAResultsSelect(self.bot, results))
         return await paginator.start(reply=True)
-        
+
 def setup(bot: AquaBot) -> None:
     bot.add_cog(LiveAquaria(bot))
